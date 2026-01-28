@@ -1,0 +1,82 @@
+# Spring Boot 应用配置
+spring:
+  application:
+    name: crazydream
+  
+  # 允许循环依赖
+  main:
+    allow-circular-references: true
+  
+  # 数据库配置
+  # 生产环境建议通过环境变量覆盖敏感信息：
+  #   SPRING_DATASOURCE_URL, SPRING_DATASOURCE_USERNAME, SPRING_DATASOURCE_PASSWORD
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/crazydream?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:Zf860610_1}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  
+  # 文件上传配置
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+  
+  # 激活的配置文件（默认开发环境）
+  profiles:
+    active: dev
+
+# 服务器配置
+server:
+  port: 8080
+
+# MyBatis 配置
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.crazydream.entity
+  # 开启驼峰命名映射（数据库字段nick_name自动映射到nickName）
+  configuration:
+    map-underscore-to-camel-case: true
+# 日志配置
+logging:
+  level:
+    com.crazydream: DEBUG
+    org.mybatis: DEBUG
+
+# 阿里云 OSS 配置
+# 生产环境建议通过环境变量覆盖敏感信息：
+#   ALIYUN_OSS_ACCESS_KEY_ID, ALIYUN_OSS_ACCESS_KEY_SECRET
+aliyun:
+  oss:
+    endpoint: ${ALIYUN_OSS_ENDPOINT:oss-cn-beijing.aliyuncs.com}
+    access-key-id: ${ALIYUN_OSS_ACCESS_KEY_ID:your-access-key-id}
+    access-key-secret: ${ALIYUN_OSS_ACCESS_KEY_SECRET:your-access-key-secret}
+    bucket-name: ${ALIYUN_OSS_BUCKET_NAME:crazydream01}
+    domain: ${ALIYUN_OSS_DOMAIN:crazydream01.oss-cn-beijing.aliyuncs.com}
+# JWT 配置
+# 生产环境建议通过环境变量覆盖 JWT_SECRET
+jwt:
+  secret: ${JWT_SECRET:71b802d1507b4a9492f39d3365d0d6a00430212b05276a64c2b1f6e0b2d0a9e8}
+  expiration: ${JWT_EXPIRATION:86400}
+  header: Authorization
+  prefix: "Bearer "
+
+# 微信开放平台配置
+# 生产环境建议通过环境变量覆盖敏感信息
+wechat:
+  app-id: ${WECHAT_APP_ID:your-app-id}
+  app-secret: ${WECHAT_APP_SECRET:your-app-secret}
+  api:
+    code2session-url: https://api.weixin.qq.com/sns/jscode2session
+    timeout: 3000  # 超时时间3秒
+
+# 安全认证配置
+security:
+  # 设置为true时禁用所有接口的安全认证（仅用于测试环境）
+  auth:
+    disabled: true
+
+  # 测试环境默认用户ID（仅在security.auth.disabled=true时生效）
+  # 当请求不带token时，使用此用户ID
+  test:
+    default-user-id: 1

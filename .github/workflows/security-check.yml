@@ -1,0 +1,30 @@
+name: Production Deployment Security Check
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+
+jobs:
+  security-check:
+    name: Security Configuration Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Check security configuration for production
+        run: |
+          chmod +x ./scripts/check-security-config.sh
+          ./scripts/check-security-config.sh prod
+      
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "::error::生产环境安全配置检查失败！请检查 security.auth.disabled 配置"

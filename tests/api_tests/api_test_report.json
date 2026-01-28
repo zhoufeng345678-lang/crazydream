@@ -1,0 +1,57 @@
+[
+  {
+    "test_name": "用户注册",
+    "status": "SKIP",
+    "message": "认证功能已禁用，跳过注册测试"
+  },
+  {
+    "test_name": "用户登录",
+    "status": "SKIP",
+    "message": "认证功能已禁用，跳过登录测试"
+  },
+  {
+    "test_name": "获取所有分类",
+    "status": "ERROR",
+    "message": "HTTPConnectionPool(host='localhost', port=8080): Max retries exceeded with url: /api/categories (Caused by NewConnectionError(\"HTTPConnection(host='localhost', port=8080): Failed to establish a new connection: [Errno 61] Connection refused\"))"
+  },
+  {
+    "test_name": "根据ID获取分类",
+    "status": "ERROR",
+    "message": "HTTPConnectionPool(host='localhost', port=8080): Max retries exceeded with url: /api/categories (Caused by NewConnectionError(\"HTTPConnection(host='localhost', port=8080): Failed to establish a new connection: [Errno 61] Connection refused\"))"
+  },
+  {
+    "test_name": "获取用户成就",
+    "status": "ERROR",
+    "message": "HTTPConnectionPool(host='localhost', port=8080): Max retries exceeded with url: /api/achievements (Caused by NewConnectionError(\"HTTPConnection(host='localhost', port=8080): Failed to establish a new connection: [Errno 61] Connection refused\"))"
+  },
+  {
+    "test_name": "检查并解锁成就",
+    "status": "ERROR",
+    "message": "HTTPConnectionPool(host='localhost', port=8080): Max retries exceeded with url: /api/achievements/check (Caused by NewConnectionError(\"HTTPConnection(host='localhost', port=8080): Failed to establish a new connection: [Errno 61] Connection refused\"))"
+  },
+  {
+    "test_name": "边界测试 - 无效的分类ID",
+    "status": "ERROR",
+    "message": "HTTPConnectionPool(host='localhost', port=8080): Max retries exceeded with url: /api/categories/999999 (Caused by NewConnectionError(\"HTTPConnection(host='localhost', port=8080): Failed to establish a new connection: [Errno 61] Connection refused\"))"
+  },
+  {
+    "test_name": "边界测试 - 空密码注册",
+    "status": "ERROR",
+    "message": "HTTPConnectionPool(host='localhost', port=8080): Max retries exceeded with url: /api/auth/register (Caused by NewConnectionError(\"HTTPConnection(host='localhost', port=8080): Failed to establish a new connection: [Errno 61] Connection refused\"))"
+  },
+  {
+    "test_name": "批量删除目标接口",
+    "status": "SKIP",
+    "message": "无法创建足够的测试目标"
+  },
+  {
+    "test_name": "趋势统计接口",
+    "status": "ERROR",
+    "message": "HTTPConnectionPool(host='localhost', port=8080): Max retries exceeded with url: /api/statistics/trends?userId=1 (Caused by NewConnectionError(\"HTTPConnection(host='localhost', port=8080): Failed to establish a new connection: [Errno 61] Connection refused\"))"
+  },
+  {
+    "test_name": "分类统计接口",
+    "status": "ERROR",
+    "message": "HTTPConnectionPool(host='localhost', port=8080): Max retries exceeded with url: /api/statistics/categories?userId=1 (Caused by NewConnectionError(\"HTTPConnection(host='localhost', port=8080): Failed to establish a new connection: [Errno 61] Connection refused\"))"
+  }
+]

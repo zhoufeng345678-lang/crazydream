@@ -1,0 +1,13 @@
+# 生产环境配置（prod）
+# 说明：
+# - 通用配置仍由 application.yml 提供
+# - 此处只覆盖生产环境特有的差异配置（日志级别、安全认证等）
+
+logging:
+  level:
+    com.crazydream: INFO
+    org.mybatis: WARN
+
+security:
+  auth:
+    disabled: false

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.crazydream.infrastructure.persistence.mapper.AchievementPersistenceMapper">
+    
+    <insert id="insert" parameterType="com.crazydream.infrastructure.persistence.po.AchievementPO" 
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO achievement (user_id, type, title, description, badge_url, unlock_condition, unlocked, is_unlocked, unlocked_time, unlocked_at, create_time, update_time)
+        VALUES (#{userId}, #{type}, #{title}, #{description}, #{badgeUrl}, #{unlockCondition}, #{unlocked}, #{isUnlocked}, #{unlockedTime}, #{unlockedAt}, #{createTime}, #{updateTime})
+    </insert>
+    
+    <update id="update" parameterType="com.crazydream.infrastructure.persistence.po.AchievementPO">
+        UPDATE achievement
+        SET unlocked = #{unlocked},
+            is_unlocked = #{isUnlocked},
+            unlocked_time = #{unlockedTime},
+            unlocked_at = #{unlockedAt},
+            update_time = #{updateTime}
+        WHERE id = #{id}
+    </update>
+    
+    <select id="selectById" resultType="com.crazydream.infrastructure.persistence.po.AchievementPO">
+        SELECT id, user_id, type, title, description, badge_url, unlock_condition,
+               unlocked, is_unlocked, unlocked_time, unlocked_at, create_time, update_time
+        FROM achievement
+        WHERE id = #{id}
+    </select>
+    
+    <select id="selectByUserId" resultType="com.crazydream.infrastructure.persistence.po.AchievementPO">
+        SELECT id, user_id, type, title, description, badge_url, unlock_condition,
+               unlocked, is_unlocked, unlocked_time, unlocked_at, create_time, update_time
+        FROM achievement
+        WHERE user_id = #{userId}
+        ORDER BY create_time DESC
+    </select>
+    
+    <select id="selectUnlockedByUserId" resultType="com.crazydream.infrastructure.persistence.po.AchievementPO">
+        SELECT id, user_id, type, title, description, badge_url, unlock_condition,
+               unlocked, is_unlocked, unlocked_time, unlocked_at, create_time, update_time
+        FROM achievement
+        WHERE user_id = #{userId} AND (unlocked = true OR is_unlocked = 1)
+        ORDER BY unlocked_time DESC
+    </select>
+    
+</mapper>

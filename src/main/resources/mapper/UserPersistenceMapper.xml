@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.crazydream.infrastructure.persistence.mapper.UserPersistenceMapper">
+    
+    <insert id="insert" parameterType="com.crazydream.infrastructure.persistence.po.UserPO" 
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO user (nick_name, email, password, avatar, phone, openid, bio, level, points, create_time, update_time)
+        VALUES (#{nickName}, #{email}, #{password}, #{avatar}, #{phone}, #{openid}, #{bio}, #{level}, #{points}, #{createTime}, #{updateTime})
+    </insert>
+    
+    <update id="update" parameterType="com.crazydream.infrastructure.persistence.po.UserPO">
+        UPDATE user
+        SET nick_name = #{nickName},
+            email = #{email},
+            password = #{password},
+            avatar = #{avatar},
+            phone = #{phone},
+            openid = #{openid},
+            bio = #{bio},
+            level = #{level},
+            points = #{points},
+            update_time = #{updateTime}
+        WHERE id = #{id}
+    </update>
+    
+    <select id="selectById" resultType="com.crazydream.infrastructure.persistence.po.UserPO">
+        SELECT id, nick_name, email, password, avatar, phone, openid, bio, level, points, create_time, update_time
+        FROM user
+        WHERE id = #{id}
+    </select>
+    
+    <select id="selectByEmail" resultType="com.crazydream.infrastructure.persistence.po.UserPO">
+        SELECT id, nick_name, email, password, avatar, phone, openid, bio, level, points, create_time, update_time
+        FROM user
+        WHERE email = #{email}
+    </select>
+    
+    <select id="selectByWechatOpenId" resultType="com.crazydream.infrastructure.persistence.po.UserPO">
+        SELECT id, nick_name, email, password, avatar, phone, openid, bio, level, points, create_time, update_time
+        FROM user
+        WHERE openid = #{openid}
+    </select>
+    
+</mapper>

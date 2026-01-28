@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.crazydream.infrastructure.persistence.mapper.FilePersistenceMapper">
+    
+    <insert id="insert" parameterType="com.crazydream.infrastructure.persistence.po.FilePO" 
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO file (user_id, file_name, file_url, file_type, file_size, upload_time)
+        VALUES (#{userId}, #{fileName}, #{fileUrl}, #{fileType}, #{fileSize}, #{uploadTime})
+    </insert>
+    
+    <select id="selectById" resultType="com.crazydream.infrastructure.persistence.po.FilePO">
+        SELECT id, user_id, file_name, file_url, file_type, file_size, upload_time
+        FROM file
+        WHERE id = #{id}
+    </select>
+    
+    <select id="selectByUserId" resultType="com.crazydream.infrastructure.persistence.po.FilePO">
+        SELECT id, user_id, file_name, file_url, file_type, file_size, upload_time
+        FROM file
+        WHERE user_id = #{userId}
+        ORDER BY upload_time DESC
+    </select>
+    
+    <delete id="deleteById">
+        DELETE FROM file WHERE id = #{id}
+    </delete>
+    
+</mapper>

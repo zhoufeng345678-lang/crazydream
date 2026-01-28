@@ -1,0 +1,333 @@
+{
+  "summary": {
+    "total": 24,
+    "passed": 23,
+    "failed": 1,
+    "pass_rate": "95.8%",
+    "timestamp": "2026-01-12T19:22:33.108168"
+  },
+  "modules": {
+    "健康检查": {
+      "total": 1,
+      "passed": 1
+    },
+    "目标管理": {
+      "total": 6,
+      "passed": 6
+    },
+    "子目标管理": {
+      "total": 5,
+      "passed": 5
+    },
+    "用户管理": {
+      "total": 2,
+      "passed": 2
+    },
+    "分类管理": {
+      "total": 4,
+      "passed": 4
+    },
+    "成就管理": {
+      "total": 2,
+      "passed": 1
+    },
+    "提醒管理": {
+      "total": 3,
+      "passed": 3
+    },
+    "文件管理": {
+      "total": 1,
+      "passed": 1
+    }
+  },
+  "results": [
+    {
+      "module": "健康检查",
+      "api": "/health",
+      "method": "GET",
+      "url": "http://localhost:8080/health",
+      "http_status": 200,
+      "business_code": 200,
+      "success": true,
+      "message": "成功",
+      "response": null,
+      "timestamp": "2026-01-12T19:22:32.881551"
+    },
+    {
+      "module": "目标管理",
+      "api": "创建目标",
+      "method": "POST",
+      "url": "http://localhost:8080/api/v2/goals",
+      "http_status": 200,
+      "business_code": 200,
+      "success": true,
+      "message": "成功",
+      "response": "{'code': 200, 'message': '成功', 'data': {'id': 21, 'userId': 1, 'title': '完整测试目标', 'description': '用于测试完整CRUD操作', 'categoryId': 1, 'priority': 'high', 'deadline': None, 'progress': 0, 'status': 'not_st",
+      "timestamp": "2026-01-12T19:22:32.940685"
+    },
+    {
+      "module": "目标管理",
+      "api": "查询目标列表",
+      "method": "GET",
+      "url": "http://localhost:8080/api/v2/goals?userId=1",
+      "http_status": 200,
+      "business_code": 200,
+      "success": true,
+      "message": "成功",
+      "response": "{'code': 200, 'message': '成功', 'data': [{'id': 21, 'userId': 1, 'title': '完整测试目标', 'description': '用于测试完整CRUD操作', 'categoryId': 1, 'priority': 'high', 'deadline': None, 'progress': 0, 'status': 'not_s",
+      "timestamp": "2026-01-12T19:22:32.962171"
+    },
+    {
+      "module": "目标管理",
+      "api": "查询目标详情",
+      "method": "GET",
+      "url": "http://localhost:8080/api/v2/goals/21",
+      "http_status": 200,
+      "business_code": 200,
+      "success": true,
+      "message": "成功",
+      "response": "{'code': 200, 'message': '成功', 'data': {'id': 21, 'userId': 1, 'title': '完整测试目标', 'description': '用于测试完整CRUD操作', 'categoryId': 1, 'priority': 'high', 'deadline': None, 'progress': 0, 'status': 'not_st",
+      "timestamp": "2026-01-12T19:22:32.971083"
+    },
+    {
+      "module": "目标管理",
+      "api": "更新目标",
+      "method": "PUT",
+      "url": "http://localhost:8080/api/v2/goals/21",
+      "http_status": 200,
+      "business_code": 200,
+      "success": true,
+      "message": "成功",
+      "response": "{'code': 200, 'message': '成功', 'data': {'id': 21, 'userId': 1, 'title': '更新后的目标', 'description': '测试更新功能', 'categoryId': None, 'priority': 'medium', 'deadline': None, 'progress': 0, 'status': 'not_sta",
+      "timestamp": "2026-01-12T19:22:32.982049"
+    },
+    {
+      "module": "目标管理",
+      "api": "更新目标进度",
+      "method": "PATCH",
+      "url": "http://localhost:8080/api/v2/goals/21/progress?progress=50",
+      "http_status": 200,
+      "business_code": 200,
+      "success": true,
+      "message": "成功",
+      "response": "{'code': 200, 'message': '成功', 'data': {'id': 21, 'userId': 1, 'title': '更新后的目标', 'description': '测试更新功能', 'categoryId': None, 'priority': 'medium', 'deadline': None, 'progress': 50, 'status': 'not_st",
+      "timestamp": "2026-01-12T19:22:32.992498"
+    },
+    {
+      "module": "目标管理",
+      "api": "删除目标",
+      "method": "DELETE",
+      "url": "http://localhost:8080/api/v2/goals/21",
+      "http_status": 200,
+      "business_code": 200,
+      "success": true,
+      "message": "成功",
+      "response": "{'code': 200, 'message': '成功', 'data': True}",
+      "timestamp": "2026-01-12T19:22:33.000925"
+    },
+    {
+      "module": "子目标管理",
+      "api": "创建子目标",
+      "method": "POST",
+      "url": "http://localhost:8080/api/v2/subgoals",
+      "http_status": 200,
+      "business_code": 200,
+      "success": true,
+      "message": "成功",
+      "response": "{'code': 200, 'message': '成功', 'data': {'id': 11, 'goalId': 22, 'title': '测试子目标', 'description': '子目标描述', 'progress': 0, 'status': 'not_started', 'createTime': '2026-01-12T19:22:33.01332', 'updateTime",
+      "timestamp": "2026-01-12T19:22:33.017147"
+    },
+    {
+      "module": "子目标管理",
+      "api": "查询子目标列表",
+      "method": "GET",
+      "url": "http://localhost:8080/api/v2/subgoals?goalId=22",
+      "http_status": 200,
+      "business_code": 200,
+      "success": true,
+      "message": "成功",
+      "response": "{'code': 200, 'message': '成功', 'data': []}",
+      "timestamp": "2026-01-12T19:22:33.021047"
+    },
+    {
+      "module": "子目标管理",
+      "api": "更新子目标",
+      "method": "PUT",
+      "url": "http://localhost:8080/api/v2/subgoals/11",
+      "http_status": 200,
+      "business_code": 200,
+      "success": true,
+      "message": "成功",
+      "response": "{'code': 200, 'message': '成功', 'data': {'id': 11, 'goalId': 22, 'title': '测试子目标', 'description': '子目标描述', 'progress': 0, 'status': 'not_started', 'createTime': '2026-01-12T19:22:33', 'updateTime': '20",
+      "timestamp": "2026-01-12T19:22:33.028953"
+    },
+    {
+      "module": "子目标管理",
+      "api": "完成子目标",
+      "method": "PATCH",
+      "url": "http://localhost:8080/api/v2/subgoals/11/complete",
+      "http_status": 200,
+      "business_code": 200,
+      "success": true,
+      "message": "成功",
+      "response": "{'code': 200, 'message': '成功', 'data': {'id': 11, 'goalId': 22, 'title': '测试子目标', 'description': '子目标描述', 'progress': 100, 'status': 'completed', 'createTime': '2026-01-12T19:22:33', 'updateTime': '20",
+      "timestamp": "2026-01-12T19:22:33.035346"
+    },
+    {
+      "module": "子目标管理",
+      "api": "删除子目标",
+      "method": "DELETE",
+      "url": "http://localhost:8080/api/v2/subgoals/11",
+      "http_status": 200,
+      "business_code": 200,
+      "success": true,
+      "message": "成功",
+      "response": "{'code': 200, 'message': '成功', 'data': True}",
+      "timestamp": "2026-01-12T19:22:33.039625"
+    },
+    {
+      "module": "用户管理",
+      "api": "查询用户信息",
+      "method": "GET",
+      "url": "http://localhost:8080/api/v2/users/1",
+      "http_status": 200,
+      "business_code": 200,
+      "success": true,
+      "message": "成功",
+      "response": "{'code': 200, 'message': '成功', 'data': {'id': 1, 'nickName': '测试用户', 'email': 'test@example.com', 'avatar': 'https://example.com/avatar.jpg', 'level': 1, 'levelDescription': '初学者', 'points': 0, 'creat",
+      "timestamp": "2026-01-12T19:22:33.045608"
+    },
+    {
+      "module": "用户管理",
+      "api": "更新用户资料",
+      "method": "PUT",
+      "url": "http://localhost:8080/api/v2/users/1",
+      "http_status": 200,
+      "business_code": 200,
+      "success": true,
+      "message": "成功",
+      "response": "{'code': 200, 'message': '成功', 'data': {'id': 1, 'nickName': '测试用户', 'email': 'test@example.com', 'avatar': 'https://example.com/avatar.jpg', 'level': 1, 'levelDescription': '初学者', 'points': 0, 'creat",
+      "timestamp": "2026-01-12T19:22:33.048685"
+    },
+    {
+      "module": "分类管理",
+      "api": "查询所有分类",
+      "method": "GET",
+      "url": "http://localhost:8080/api/v2/categories",
+      "http_status": 200,
+      "business_code": 200,
+      "success": true,
+      "message": "成功",
+      "response": "{'code': 200, 'message': '成功', 'data': [{'id': 1, 'name': '职业发展', 'icon': '💼', 'color': '#3498db', 'sort': 1, 'enabled': True}, {'id': 2, 'name': '学习成长', 'icon': '📚', 'color': '#2ecc71', 'sort': 2, 'e",
+      "timestamp": "2026-01-12T19:22:33.054799"
+    },
+    {
+      "module": "分类管理",
+      "api": "创建分类",
+      "method": "POST",
+      "url": "http://localhost:8080/api/v2/categories",
+      "http_status": 200,
+      "business_code": 200,
+      "success": true,
+      "message": "成功",
+      "response": "{'code': 200, 'message': '成功', 'data': {'id': 17, 'name': '测试分类', 'icon': '🧪', 'color': None, 'sort': None, 'enabled': True}}",
+      "timestamp": "2026-01-12T19:22:33.060766"
+    },
+    {
+      "module": "分类管理",
+      "api": "更新分类",
+      "method": "PUT",
+      "url": "http://localhost:8080/api/v2/categories/17",
+      "http_status": 200,
+      "business_code": 200,
+      "success": true,
+      "message": "成功",
+      "response": "{'code': 200, 'message': '成功', 'data': {'id': 17, 'name': '更新后的分类', 'icon': None, 'color': None, 'sort': None, 'enabled': None}}",
+      "timestamp": "2026-01-12T19:22:33.063506"
+    },
+    {
+      "module": "分类管理",
+      "api": "删除分类",
+      "method": "DELETE",
+      "url": "http://localhost:8080/api/v2/categories/17",
+      "http_status": 200,
+      "business_code": 200,
+      "success": true,
+      "message": "成功",
+      "response": "{'code': 200, 'message': '成功', 'data': True}",
+      "timestamp": "2026-01-12T19:22:33.067776"
+    },
+    {
+      "module": "成就管理",
+      "api": "查询用户成就",
+      "method": "GET",
+      "url": "http://localhost:8080/api/v2/achievements?userId=1",
+      "http_status": 200,
+      "business_code": 200,
+      "success": true,
+      "message": "成功",
+      "response": "{'code': 200, 'message': '成功', 'data': [{'id': 1, 'userId': 1, 'type': 'first_goal', 'typeName': '首个目标', 'description': '创建第一个目标', 'unlocked': True, 'unlockedTime': '2026-01-12T17:49:16', 'createTime'",
+      "timestamp": "2026-01-12T19:22:33.073247"
+    },
+    {
+      "module": "成就管理",
+      "api": "解锁成就",
+      "method": "POST",
+      "url": "http://localhost:8080/api/v2/achievements/unlock",
+      "http_status": 200,
+      "business_code": 500,
+      "success": false,
+      "message": "成就已解锁",
+      "response": "{'code': 500, 'message': '成就已解锁', 'data': None}",
+      "timestamp": "2026-01-12T19:22:33.079795"
+    },
+    {
+      "module": "提醒管理",
+      "api": "查询用户提醒",
+      "method": "GET",
+      "url": "http://localhost:8080/api/v2/reminders?userId=1",
+      "http_status": 200,
+      "business_code": 200,
+      "success": true,
+      "message": "成功",
+      "response": "{'code': 200, 'message': '成功', 'data': [{'id': 3, 'userId': 1, 'goalId': 1, 'title': '测试提醒', 'remindTime': '2026-12-31T23:59:59', 'read': False, 'overdue': False, 'createTime': '2026-01-12T17:29:30'},",
+      "timestamp": "2026-01-12T19:22:33.085838"
+    },
+    {
+      "module": "提醒管理",
+      "api": "创建提醒",
+      "method": "POST",
+      "url": "http://localhost:8080/api/v2/reminders",
+      "http_status": 200,
+      "business_code": 200,
+      "success": true,
+      "message": "成功",
+      "response": "{'code': 200, 'message': '成功', 'data': {'id': 10, 'userId': 1, 'goalId': 1, 'title': '测试提醒', 'remindTime': '2026-12-31T23:59:59', 'read': False, 'overdue': False, 'createTime': '2026-01-12T19:22:33.08",
+      "timestamp": "2026-01-12T19:22:33.092965"
+    },
+    {
+      "module": "提醒管理",
+      "api": "标记为已读",
+      "method": "PATCH",
+      "url": "http://localhost:8080/api/v2/reminders/10/read",
+      "http_status": 200,
+      "business_code": 200,
+      "success": true,
+      "message": "成功",
+      "response": "{'code': 200, 'message': '成功', 'data': {'id': 10, 'userId': 1, 'goalId': 1, 'title': '测试提醒', 'remindTime': '2026-12-31T23:59:59', 'read': True, 'overdue': False, 'createTime': '2026-01-12T19:22:33'}}",
+      "timestamp": "2026-01-12T19:22:33.097786"
+    },
+    {
+      "module": "文件管理",
+      "api": "上传文件",
+      "method": "POST",
+      "url": "http://localhost:8080/api/v2/files/upload",
+      "http_status": 200,
+      "business_code": 200,
+      "success": true,
+      "message": "成功",
+      "response": "{'code': 200, 'message': '成功', 'data': {'id': None, 'userId': None, 'fileName': 'test.txt', 'fileUrl': '/uploads/test.txt', 'fileType': None, 'fileTypeDescription': None, 'fileSize': 12, 'uploadTime':",
+      "timestamp": "2026-01-12T19:22:33.107475"
+    }
+  ]
+}

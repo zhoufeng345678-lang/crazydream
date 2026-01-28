@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.crazydream.infrastructure.persistence.mapper.GoalPersistenceMapper">
+    
+    <!-- Result Map -->
+    <resultMap id="GoalPOResultMap" type="com.crazydream.infrastructure.persistence.po.GoalPO">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="title" column="title"/>
+        <result property="description" column="description"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="priority" column="priority"/>
+        <result property="deadline" column="deadline"/>
+        <result property="progress" column="progress"/>
+        <result property="status" column="status"/>
+        <result property="imageUrl" column="image_url"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    
+    <!-- Insert -->
+    <insert id="insert" parameterType="com.crazydream.infrastructure.persistence.po.GoalPO" 
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO goal (
+            user_id, title, description, category_id, priority,
+            deadline, progress, status, image_url, create_time, update_time
+        ) VALUES (
+            #{userId}, #{title}, #{description}, #{categoryId}, #{priority},
+            #{deadline}, #{progress}, #{status}, #{imageUrl}, #{createTime}, #{updateTime}
+        )
+    </insert>
+    
+    <!-- Update -->
+    <update id="update" parameterType="com.crazydream.infrastructure.persistence.po.GoalPO">
+        UPDATE goal SET
+            title = #{title},
+            description = #{description},
+            category_id = #{categoryId},
+            priority = #{priority},
+            deadline = #{deadline},
+            progress = #{progress},
+            status = #{status},
+            image_url = #{imageUrl},
+            update_time = #{updateTime}
+        WHERE id = #{id}
+    </update>
+    
+    <!-- Select By ID -->
+    <select id="selectById" parameterType="long" resultMap="GoalPOResultMap">
+        SELECT id, user_id, title, description, category_id, priority,
+               deadline, progress, status, image_url, create_time, update_time
+        FROM goal
+        WHERE id = #{id}
+    </select>
+    
+    <!-- Select By User ID -->
+    <select id="selectByUserId" parameterType="long" resultMap="GoalPOResultMap">
+        SELECT id, user_id, title, description, category_id, priority,
+               deadline, progress, status, image_url, create_time, update_time
+        FROM goal
+        WHERE user_id = #{userId}
+        ORDER BY update_time DESC
+    </select>
+    
+    <!-- Select By Category ID and User ID -->
+    <select id="selectByCategoryIdAndUserId" resultMap="GoalPOResultMap">
+        SELECT id, user_id, title, description, category_id, priority,
+               deadline, progress, status, image_url, create_time, update_time
+        FROM goal
+        WHERE category_id = #{categoryId} AND user_id = #{userId}
+        ORDER BY update_time DESC
+    </select>
+    
+    <!-- Delete -->
+    <delete id="deleteById" parameterType="long">
+        DELETE FROM goal WHERE id = #{id}
+    </delete>
+    
+    <!-- Batch Delete -->
+    <delete id="batchDelete">
+        DELETE FROM goal
+        WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+    <!-- Select Recent -->
+    <select id="selectRecentByUserId" resultMap="GoalPOResultMap">
+        SELECT id, user_id, title, description, category_id, priority,
+               deadline, progress, status, image_url, create_time, update_time
+        FROM goal
+        WHERE user_id = #{userId}
+        ORDER BY update_time DESC
+        LIMIT #{limit}
+    </select>
+    
+    <!-- Select Today Reminder Goals -->
+    <select id="selectTodayReminderGoals" resultMap="GoalPOResultMap">
+        SELECT g.id, g.user_id, g.title, g.description, g.category_id, g.priority,
+               g.deadline, g.progress, g.status, g.image_url, g.create_time, g.update_time
+        FROM goal g
+        INNER JOIN reminder r ON g.id = r.goal_id
+        WHERE g.user_id = #{userId}
+          AND DATE(r.remind_time) = #{date}
+          AND g.status != 'completed'
+        ORDER BY r.remind_time ASC
+    </select>
+    
+    <!-- Count Completed Goals By User ID -->
+    <select id="countCompletedByUserId" resultType="int">
+        SELECT COUNT(*)
+        FROM goal
+        WHERE user_id = #{userId}
+          AND status = 'completed'
+    </select>
+    
+    <!-- Count Active Goals By User ID (exclude abandoned) -->
+    <select id="countActiveByUserId" resultType="int">
+        SELECT COUNT(*)
+        FROM goal
+        WHERE user_id = #{userId}
+          AND status &lt;&gt; 'abandoned'
+    </select>
+    
+</mapper>

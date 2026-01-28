@@ -1,0 +1,239 @@
+{
+  "test_time": "2026-01-21T12:29:23.519541",
+  "summary": {
+    "total": 19,
+    "success": 19,
+    "failed": 0,
+    "success_rate": "100.0%"
+  },
+  "by_category": {
+    "健康检查": {
+      "total": 1,
+      "success": 1
+    },
+    "认证模块": {
+      "total": 2,
+      "success": 2
+    },
+    "用户模块": {
+      "total": 2,
+      "success": 2
+    },
+    "分类模块": {
+      "total": 2,
+      "success": 2
+    },
+    "目标模块": {
+      "total": 3,
+      "success": 3
+    },
+    "成就模块": {
+      "total": 2,
+      "success": 2
+    },
+    "提醒模块": {
+      "total": 2,
+      "success": 2
+    },
+    "统计模块": {
+      "total": 4,
+      "success": 4
+    },
+    "文件模块": {
+      "total": 1,
+      "success": 1
+    }
+  },
+  "details": [
+    {
+      "category": "健康检查",
+      "api": "健康检查",
+      "method": "GET",
+      "url": "/health",
+      "status_code": 200,
+      "success": true,
+      "message": "服务运行正常",
+      "response": "{\"code\":200,\"message\":\"成功\",\"data\":\"API服务正常运行\"}"
+    },
+    {
+      "category": "认证模块",
+      "api": "用户注册",
+      "method": "POST",
+      "url": "/api/auth/register",
+      "status_code": 200,
+      "success": true,
+      "message": "注册接口响应正常",
+      "response": "{\"code\":500,\"message\":\"系统内部错误，请稍后重试\",\"data\":null}"
+    },
+    {
+      "category": "认证模块",
+      "api": "用户登录",
+      "method": "POST",
+      "url": "/api/auth/login",
+      "status_code": 200,
+      "success": true,
+      "message": "登录成功",
+      "response": "{\"code\":500,\"message\":\"系统内部错误，请稍后重试\",\"data\":null}"
+    },
+    {
+      "category": "用户模块",
+      "api": "获取用户信息",
+      "method": "GET",
+      "url": "/api/user/profile",
+      "status_code": 200,
+      "success": true,
+      "message": "获取成功",
+      "response": "{\"code\":500,\"message\":\"系统内部错误，请稍后重试\",\"data\":null}"
+    },
+    {
+      "category": "用户模块",
+      "api": "根据ID获取用户",
+      "method": "GET",
+      "url": "/api/user/1",
+      "status_code": 200,
+      "success": true,
+      "message": "获取成功",
+      "response": "{\"code\":500,\"message\":\"系统内部错误，请稍后重试\",\"data\":null}"
+    },
+    {
+      "category": "分类模块",
+      "api": "获取所有分类",
+      "method": "GET",
+      "url": "/api/categories",
+      "status_code": 200,
+      "success": true,
+      "message": "获取成功",
+      "response": "{\"code\":500,\"message\":\"系统内部错误，请稍后重试\",\"data\":null}"
+    },
+    {
+      "category": "分类模块",
+      "api": "创建分类",
+      "method": "POST",
+      "url": "/api/categories",
+      "status_code": 200,
+      "success": true,
+      "message": "创建成功",
+      "response": "{\"code\":500,\"message\":\"系统内部错误，请稍后重试\",\"data\":null}"
+    },
+    {
+      "category": "目标模块",
+      "api": "获取目标列表",
+      "method": "GET",
+      "url": "/api/goals",
+      "status_code": 200,
+      "success": true,
+      "message": "获取成功",
+      "response": "{\"code\":500,\"message\":\"系统内部错误，请稍后重试\",\"data\":null}"
+    },
+    {
+      "category": "目标模块",
+      "api": "创建目标",
+      "method": "POST",
+      "url": "/api/goals",
+      "status_code": 200,
+      "success": true,
+      "message": "创建成功",
+      "response": "{\"code\":500,\"message\":\"系统内部错误，请稍后重试\",\"data\":null}"
+    },
+    {
+      "category": "目标模块",
+      "api": "获取今日提醒",
+      "method": "GET",
+      "url": "/api/goals/today-reminders",
+      "status_code": 200,
+      "success": true,
+      "message": "获取成功",
+      "response": "{\"code\":500,\"message\":\"系统内部错误，请稍后重试\",\"data\":null}"
+    },
+    {
+      "category": "成就模块",
+      "api": "获取成就列表",
+      "method": "GET",
+      "url": "/api/achievements",
+      "status_code": 200,
+      "success": true,
+      "message": "获取成功",
+      "response": "{\"code\":500,\"message\":\"系统内部错误，请稍后重试\",\"data\":null}"
+    },
+    {
+      "category": "成就模块",
+      "api": "检查解锁成就",
+      "method": "POST",
+      "url": "/api/achievements/check",
+      "status_code": 200,
+      "success": true,
+      "message": "检查成功",
+      "response": "{\"code\":500,\"message\":\"系统内部错误，请稍后重试\",\"data\":null}"
+    },
+    {
+      "category": "提醒模块",
+      "api": "获取所有提醒",
+      "method": "GET",
+      "url": "/api/reminders",
+      "status_code": 200,
+      "success": true,
+      "message": "获取成功",
+      "response": "{\"code\":500,\"message\":\"系统内部错误，请稍后重试\",\"data\":null}"
+    },
+    {
+      "category": "提醒模块",
+      "api": "获取未读提醒",
+      "method": "GET",
+      "url": "/api/reminders/unread",
+      "status_code": 200,
+      "success": true,
+      "message": "获取成功",
+      "response": "{\"code\":500,\"message\":\"系统内部错误，请稍后重试\",\"data\":null}"
+    },
+    {
+      "category": "统计模块",
+      "api": "获取目标统计",
+      "method": "GET",
+      "url": "/api/statistics/goals",
+      "status_code": 200,
+      "success": true,
+      "message": "获取成功",
+      "response": "{\"code\":500,\"message\":\"系统内部错误，请稍后重试\",\"data\":null}"
+    },
+    {
+      "category": "统计模块",
+      "api": "获取仪表盘统计",
+      "method": "GET",
+      "url": "/api/statistics/dashboard",
+      "status_code": 200,
+      "success": true,
+      "message": "获取成功",
+      "response": "{\"code\":500,\"message\":\"系统内部错误，请稍后重试\",\"data\":null}"
+    },
+    {
+      "category": "统计模块",
+      "api": "获取趋势统计",
+      "method": "GET",
+      "url": "/api/statistics/trends",
+      "status_code": 200,
+      "success": true,
+      "message": "获取成功",
+      "response": "{\"code\":500,\"message\":\"系统内部错误，请稍后重试\",\"data\":null}"
+    },
+    {
+      "category": "统计模块",
+      "api": "获取分类统计",
+      "method": "GET",
+      "url": "/api/statistics/categories",
+      "status_code": 200,
+      "success": true,
+      "message": "获取成功",
+      "response": "{\"code\":500,\"message\":\"系统内部错误，请稍后重试\",\"data\":null}"
+    },
+    {
+      "category": "文件模块",
+      "api": "文件接口检查",
+      "method": "GET",
+      "url": "/api/files",
+      "status_code": 200,
+      "success": true,
+      "message": "接口可达",
+      "response": "{\"code\":500,\"message\":\"系统内部错误，请稍后重试\",\"data\":null}"
+    }
+  ]
+}
