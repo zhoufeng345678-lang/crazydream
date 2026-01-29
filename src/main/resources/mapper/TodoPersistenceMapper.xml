@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.crazydream.infrastructure.persistence.mapper.TodoPersistenceMapper">
+    
+    <!-- Result Map -->
+    <resultMap id="TodoPOResultMap" type="com.crazydream.infrastructure.persistence.po.TodoPO">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="title" column="title"/>
+        <result property="description" column="description"/>
+        <result property="priority" column="priority"/>
+        <result property="status" column="status"/>
+        <result property="dueDate" column="due_date"/>
+        <result property="remindTime" column="remind_time"/>
+        <result property="remindSent" column="remind_sent"/>
+        <result property="relatedGoalId" column="related_goal_id"/>
+        <result property="completedTime" column="completed_time"/>
+        <result property="sortOrder" column="sort_order"/>
+        <result property="tags" column="tags"/>
+        <result property="estimatedMinutes" column="estimated_minutes"/>
+        <result property="actualMinutes" column="actual_minutes"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    
+    <!-- Insert -->
+    <insert id="insert" parameterType="com.crazydream.infrastructure.persistence.po.TodoPO" 
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO todo (
+            user_id, title, description, priority, status, due_date, remind_time,
+            remind_sent, related_goal_id, completed_time, sort_order, tags,
+            estimated_minutes, actual_minutes, create_time, update_time
+        ) VALUES (
+            #{userId}, #{title}, #{description}, #{priority}, #{status}, #{dueDate}, #{remindTime},
+            #{remindSent}, #{relatedGoalId}, #{completedTime}, #{sortOrder}, #{tags},
+            #{estimatedMinutes}, #{actualMinutes}, #{createTime}, #{updateTime}
+        )
+    </insert>
+    
+    <!-- Update -->
+    <update id="update" parameterType="com.crazydream.infrastructure.persistence.po.TodoPO">
+        UPDATE todo SET
+            title = #{title},
+            description = #{description},
+            priority = #{priority},
+            status = #{status},
+            due_date = #{dueDate},
+            remind_time = #{remindTime},
+            remind_sent = #{remindSent},
+            related_goal_id = #{relatedGoalId},
+            completed_time = #{completedTime},
+            sort_order = #{sortOrder},
+            tags = #{tags},
+            estimated_minutes = #{estimatedMinutes},
+            actual_minutes = #{actualMinutes},
+            update_time = #{updateTime}
+        WHERE id = #{id}
+    </update>
+    
+    <!-- Select By ID -->
+    <select id="selectById" parameterType="long" resultMap="TodoPOResultMap">
+        SELECT * FROM todo WHERE id = #{id}
+    </select>
+    
+    <!-- Select By User ID -->
+    <select id="selectByUserId" parameterType="long" resultMap="TodoPOResultMap">
+        SELECT * FROM todo
+        WHERE user_id = #{userId}
+        ORDER BY sort_order ASC, create_time DESC
+    </select>
+    
+    <!-- Select By User ID and Status -->
+    <select id="selectByUserIdAndStatus" resultMap="TodoPOResultMap">
+        SELECT * FROM todo
+        WHERE user_id = #{userId} AND status = #{status}
+        ORDER BY sort_order ASC, create_time DESC
+    </select>
+    
+    <!-- Select By User ID and Priority -->
+    <select id="selectByUserIdAndPriority" resultMap="TodoPOResultMap">
+        SELECT * FROM todo
+        WHERE user_id = #{userId} AND priority = #{priority}
+        ORDER BY sort_order ASC, create_time DESC
+    </select>
+    
+    <!-- Select Today Todos -->
+    <select id="selectTodayTodos" resultMap="TodoPOResultMap">
+        SELECT * FROM todo
+        WHERE user_id = #{userId}
+        AND DATE(create_time) = #{date}
+        AND status != 'cancelled'
+        ORDER BY sort_order ASC, priority DESC
+    </select>
+    
+    <!-- Select Overdue Todos -->
+    <select id="selectOverdueTodos" resultMap="TodoPOResultMap">
+        SELECT * FROM todo
+        WHERE user_id = #{userId}
+        AND due_date &lt; #{now}
+        AND status NOT IN ('completed', 'cancelled')
+        ORDER BY due_date ASC
+    </select>
+    
+    <!-- Select Need Remind -->
+    <select id="selectNeedRemind" resultMap="TodoPOResultMap">
+        SELECT * FROM todo
+        WHERE remind_time BETWEEN #{startTime} AND #{endTime}
+        AND remind_sent = 0
+        AND status NOT IN ('completed', 'cancelled')
+        ORDER BY remind_time ASC
+    </select>
+    
+    <!-- Delete -->
+    <delete id="deleteById" parameterType="long">
+        DELETE FROM todo WHERE id = #{id}
+    </delete>
+    
+    <!-- Count Completed By User ID -->
+    <select id="countCompletedByUserId" parameterType="long" resultType="int">
+        SELECT COUNT(*) FROM todo 
+        WHERE user_id = #{userId} AND status = 'completed'
+    </select>
+    
+    <!-- Count High Priority Completed -->
+    <select id="countHighPriorityCompleted" parameterType="long" resultType="int">
+        SELECT COUNT(*) FROM todo 
+        WHERE user_id = #{userId} 
+        AND status = 'completed' 
+        AND priority IN ('high', 'urgent')
+    </select>
+    
+    <!-- Count Consecutive Days -->
+    <select id="countConsecutiveDays" parameterType="long" resultType="int">
+        SELECT COUNT(DISTINCT DATE(completed_time)) as consecutive_days
+        FROM (
+            SELECT completed_time,
+                   DATE_SUB(DATE(completed_time), INTERVAL ROW_NUMBER() OVER (ORDER BY DATE(completed_time)) DAY) as grp
+            FROM todo
+            WHERE user_id = #{userId} AND status = 'completed'
+            ORDER BY completed_time DESC
+        ) t
+        GROUP BY grp
+        ORDER BY consecutive_days DESC
+        LIMIT 1
+    </select>
+    
+</mapper>

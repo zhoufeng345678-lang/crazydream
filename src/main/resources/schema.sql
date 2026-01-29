@@ -98,10 +98,65 @@ CREATE TABLE IF NOT EXISTS `achievement` (
   `is_unlocked` TINYINT DEFAULT 0 COMMENT '是否已解锁（兼容字段）',
   `unlocked_time` DATETIME DEFAULT NULL COMMENT '解锁时间',
   `unlocked_at` DATETIME DEFAULT NULL COMMENT '解锁时间（兼容字段）',
+  `progress` INT DEFAULT 0 COMMENT '当前进度值',
+  `target` INT DEFAULT 1 COMMENT '目标进度值',
+  `category` VARCHAR(50) DEFAULT 'general' COMMENT '成就分类(goal_count/consecutive/category_focus/efficiency/milestone)',
+  `tier` VARCHAR(20) DEFAULT 'bronze' COMMENT '成就等级(bronze/silver/gold/platinum/diamond)',
+  `icon` VARCHAR(10) DEFAULT '🏆' COMMENT '成就图标emoji',
+  `sort_order` INT DEFAULT 0 COMMENT '排序权重',
   `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='成就表';
+
+-- 创建日记表
+CREATE TABLE IF NOT EXISTS `diary` (
+  `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
+  `user_id` BIGINT NOT NULL COMMENT '用户ID',
+  `title` VARCHAR(200) NOT NULL COMMENT '日记标题',
+  `content` TEXT NOT NULL COMMENT '日记内容(支持基础富文本)',
+  `category` VARCHAR(50) DEFAULT 'general' COMMENT '分类(mood/work/study/general)',
+  `tags` VARCHAR(500) DEFAULT NULL COMMENT '标签(JSON数组)',
+  `mood` VARCHAR(20) DEFAULT NULL COMMENT '心情(happy/sad/calm/excited)',
+  `weather` VARCHAR(20) DEFAULT NULL COMMENT '天气',
+  `related_goal_id` BIGINT DEFAULT NULL COMMENT '关联的目标ID',
+  `image_urls` TEXT DEFAULT NULL COMMENT '图片URL列表(JSON数组)',
+  `is_public` TINYINT DEFAULT 0 COMMENT '是否公开(0:私密, 1:公开)',
+  `view_count` INT DEFAULT 0 COMMENT '查看次数',
+  `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `diary_date` DATE NOT NULL COMMENT '日记日期',
+  FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE CASCADE,
+  FOREIGN KEY (`related_goal_id`) REFERENCES `goal`(`id`) ON DELETE SET NULL,
+  INDEX idx_user_date (`user_id`, `diary_date`),
+  INDEX idx_category (`category`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='日记表';
+
+-- 创建待办事项表
+CREATE TABLE IF NOT EXISTS `todo` (
+  `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
+  `user_id` BIGINT NOT NULL COMMENT '用户ID',
+  `title` VARCHAR(200) NOT NULL COMMENT '待办标题',
+  `description` TEXT DEFAULT NULL COMMENT '待办描述',
+  `priority` VARCHAR(20) DEFAULT 'medium' COMMENT '优先级(low/medium/high/urgent)',
+  `status` VARCHAR(20) DEFAULT 'pending' COMMENT '状态(pending/in_progress/completed/cancelled)',
+  `due_date` DATETIME DEFAULT NULL COMMENT '截止时间',
+  `remind_time` DATETIME DEFAULT NULL COMMENT '提醒时间',
+  `remind_sent` TINYINT DEFAULT 0 COMMENT '提醒是否已发送(0:未发送, 1:已发送)',
+  `related_goal_id` BIGINT DEFAULT NULL COMMENT '关联的目标ID',
+  `completed_time` DATETIME DEFAULT NULL COMMENT '完成时间',
+  `sort_order` INT DEFAULT 0 COMMENT '排序',
+  `tags` VARCHAR(500) DEFAULT NULL COMMENT '标签(JSON数组)',
+  `estimated_minutes` INT DEFAULT NULL COMMENT '预计耗时(分钟)',
+  `actual_minutes` INT DEFAULT NULL COMMENT '实际耗时(分钟)',
+  `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE CASCADE,
+  FOREIGN KEY (`related_goal_id`) REFERENCES `goal`(`id`) ON DELETE SET NULL,
+  INDEX idx_user_status (`user_id`, `status`),
+  INDEX idx_due_date (`due_date`),
+  INDEX idx_priority (`priority`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='待办事项表';
 
 -- 插入默认分类数据
 INSERT INTO `category` (`name`, `icon`, `color`, `sort`, `status`) VALUES

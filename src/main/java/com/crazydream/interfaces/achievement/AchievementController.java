@@ -58,6 +58,22 @@ public class AchievementController {
         }
     }
     
+    /**
+     * 检查并解锁成就，返回新解锁的成就列表
+     * 用于目标完成后的成就通知
+     */
+    @PostMapping("/check-unlock")
+    public ResponseResult<List<AchievementDTO>> checkAndUnlock() {
+        try {
+            Long userId = getCurrentUserId();
+            List<AchievementDTO> newlyUnlocked = achievementApplicationService.checkAndUnlockWithResult(userId);
+            return ResponseResult.success(newlyUnlocked);
+        } catch (Exception e) {
+            logger.error("成就检查失败", e);
+            return ResponseResult.error(500, e.getMessage());
+        }
+    }
+    
     // 内部类：解锁请求
     public static class UnlockAchievementRequest {
         private Long userId;

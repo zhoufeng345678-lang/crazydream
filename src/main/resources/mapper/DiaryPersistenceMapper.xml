@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.crazydream.infrastructure.persistence.mapper.DiaryPersistenceMapper">
+    
+    <!-- Result Map -->
+    <resultMap id="DiaryPOResultMap" type="com.crazydream.infrastructure.persistence.po.DiaryPO">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="category" column="category"/>
+        <result property="tags" column="tags"/>
+        <result property="mood" column="mood"/>
+        <result property="weather" column="weather"/>
+        <result property="relatedGoalId" column="related_goal_id"/>
+        <result property="imageUrls" column="image_urls"/>
+        <result property="isPublic" column="is_public"/>
+        <result property="viewCount" column="view_count"/>
+        <result property="diaryDate" column="diary_date"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    
+    <!-- Insert -->
+    <insert id="insert" parameterType="com.crazydream.infrastructure.persistence.po.DiaryPO" 
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO diary (
+            user_id, title, content, category, tags, mood, weather,
+            related_goal_id, image_urls, is_public, view_count, diary_date,
+            create_time, update_time
+        ) VALUES (
+            #{userId}, #{title}, #{content}, #{category}, #{tags}, #{mood}, #{weather},
+            #{relatedGoalId}, #{imageUrls}, #{isPublic}, #{viewCount}, #{diaryDate},
+            #{createTime}, #{updateTime}
+        )
+    </insert>
+    
+    <!-- Update -->
+    <update id="update" parameterType="com.crazydream.infrastructure.persistence.po.DiaryPO">
+        UPDATE diary SET
+            title = #{title},
+            content = #{content},
+            category = #{category},
+            tags = #{tags},
+            mood = #{mood},
+            weather = #{weather},
+            related_goal_id = #{relatedGoalId},
+            image_urls = #{imageUrls},
+            is_public = #{isPublic},
+            view_count = #{viewCount},
+            update_time = #{updateTime}
+        WHERE id = #{id}
+    </update>
+    
+    <!-- Select By ID -->
+    <select id="selectById" parameterType="long" resultMap="DiaryPOResultMap">
+        SELECT * FROM diary WHERE id = #{id}
+    </select>
+    
+    <!-- Select By User ID -->
+    <select id="selectByUserId" parameterType="long" resultMap="DiaryPOResultMap">
+        SELECT * FROM diary
+        WHERE user_id = #{userId}
+        ORDER BY diary_date DESC, create_time DESC
+    </select>
+    
+    <!-- Select By User ID and Date Range -->
+    <select id="selectByUserIdAndDateRange" resultMap="DiaryPOResultMap">
+        SELECT * FROM diary
+        WHERE user_id = #{userId}
+        AND diary_date BETWEEN #{startDate} AND #{endDate}
+        ORDER BY diary_date DESC
+    </select>
+    
+    <!-- Select By User ID and Category -->
+    <select id="selectByUserIdAndCategory" resultMap="DiaryPOResultMap">
+        SELECT * FROM diary
+        WHERE user_id = #{userId} AND category = #{category}
+        ORDER BY diary_date DESC
+    </select>
+    
+    <!-- Delete -->
+    <delete id="deleteById" parameterType="long">
+        DELETE FROM diary WHERE id = #{id}
+    </delete>
+    
+    <!-- Count By User ID -->
+    <select id="countByUserId" parameterType="long" resultType="int">
+        SELECT COUNT(*) FROM diary WHERE user_id = #{userId}
+    </select>
+    
+    <!-- Count Consecutive Days -->
+    <select id="countConsecutiveDays" parameterType="long" resultType="int">
+        SELECT COUNT(DISTINCT diary_date) as consecutive_days
+        FROM (
+            SELECT diary_date,
+                   DATE_SUB(diary_date, INTERVAL ROW_NUMBER() OVER (ORDER BY diary_date) DAY) as grp
+            FROM diary
+            WHERE user_id = #{userId}
+            ORDER BY diary_date DESC
+        ) t
+        GROUP BY grp
+        ORDER BY consecutive_days DESC
+        LIMIT 1
+    </select>
+    
+    <!-- Select Recent By User ID -->
+    <select id="selectRecentByUserId" resultMap="DiaryPOResultMap">
+        SELECT * FROM diary
+        WHERE user_id = #{userId}
+        ORDER BY create_time DESC
+        LIMIT #{limit}
+    </select>
+    
+</mapper>

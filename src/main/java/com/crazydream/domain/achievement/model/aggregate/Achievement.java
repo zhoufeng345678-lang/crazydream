@@ -17,6 +17,13 @@ public class Achievement {
     private LocalDateTime unlockedTime;
     private LocalDateTime createTime;
     
+    // 新增字段
+    private Integer progress;        // 当前进度值
+    private Integer target;          // 目标进度值
+    private String category;         // 成就分类
+    private String tier;             // 成就等级
+    private String icon;             // 成就图标emoji
+    
     private Achievement() {}
     
     public static Achievement create(UserId userId, AchievementType type) {
@@ -25,6 +32,14 @@ public class Achievement {
         achievement.type = type;
         achievement.unlocked = false;
         achievement.createTime = LocalDateTime.now();
+        
+        // 初始化新字段
+        achievement.progress = 0;
+        achievement.target = type.getTarget();
+        achievement.category = type.getCategory();
+        achievement.tier = type.getTier();
+        achievement.icon = type.getIcon();
+        
         return achievement;
     }
     
@@ -38,6 +53,14 @@ public class Achievement {
         achievement.unlocked = unlocked;
         achievement.unlockedTime = unlockedTime;
         achievement.createTime = createTime;
+        
+        // 初始化新字段（如果未设置，使用类型默认值）
+        achievement.progress = 0;
+        achievement.target = type.getTarget();
+        achievement.category = type.getCategory();
+        achievement.tier = type.getTier();
+        achievement.icon = type.getIcon();
+        
         return achievement;
     }
     
@@ -49,6 +72,16 @@ public class Achievement {
         }
         this.unlocked = true;
         this.unlockedTime = LocalDateTime.now();
+    }
+    
+    /**
+     * 更新成就进度
+     * @param current 当前进度值
+     * @param target 目标进度值
+     */
+    public void updateProgress(int current, int target) {
+        this.progress = current;
+        this.target = target;
     }
     
     /**
@@ -116,7 +149,27 @@ public class Achievement {
                 return statistics.getCompletionRate() >= 0.9 
                     && statistics.getCompletedGoals() >= 20;
             
-            // 等级提升（预留）
+            // 日记系列
+            case FIRST_DIARY:
+                return statistics.getTotalDiaries() >= 1;
+            case DIARY_WEEK:
+                return statistics.getConsecutiveDiaryDays() >= 7;
+            case DIARY_MONTH:
+                return statistics.getConsecutiveDiaryDays() >= 30;
+            case DIARY_100:
+                return statistics.getTotalDiaries() >= 100;
+            
+            // 待办系列
+            case FIRST_TODO:
+                return statistics.getCompletedTodos() >= 1;
+            case TODO_COMPLETED_10:
+                return statistics.getCompletedTodos() >= 10;
+            case TODO_PRIORITY:
+                return statistics.getHighPriorityCompletedCount() >= 10;
+            case TODO_STREAK:
+                return statistics.getConsecutiveTodoDays() >= 7;
+            
+            // 等级提升(预留)
             case LEVEL_UP:
                 return false; // 需要单独处理用户等级
             
@@ -163,6 +216,11 @@ public class Achievement {
     public boolean isUnlocked() { return unlocked; }
     public LocalDateTime getUnlockedTime() { return unlockedTime; }
     public LocalDateTime getCreateTime() { return createTime; }
+    public Integer getProgress() { return progress; }
+    public Integer getTarget() { return target; }
+    public String getCategory() { return category; }
+    public String getTier() { return tier; }
+    public String getIcon() { return icon; }
     
     public void setId(AchievementId id) {
         this.id = id;

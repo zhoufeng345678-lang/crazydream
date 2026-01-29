@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.ArrayList;
 
 @Service
 public class AchievementApplicationService {
@@ -59,6 +60,35 @@ public class AchievementApplicationService {
                 achievementRepository.save(achievement);
             }
         }
+    }
+    
+    /**
+     * 检查并解锁成就，返回新解锁的成就列表
+     * 用于前端展示成就解锁通知
+     * 
+     * @param userId 用户ID
+     * @return 新解锁的成就列表
+     */
+    @Transactional
+    public List<AchievementDTO> checkAndUnlockWithResult(Long userId) {
+        List<Achievement> achievements = achievementRepository.findByUserId(UserId.of(userId));
+        AchievementStatistics statistics = statisticsService.collectStatistics(userId);
+        
+        List<AchievementDTO> newlyUnlocked = new ArrayList<>();
+        
+        for (Achievement achievement : achievements) {
+            // 只处理未解锁且满足条件的成就
+            if (!achievement.isUnlocked() && achievement.canUnlock(statistics)) {
+                // 解锁
+                achievement.unlock();
+                achievement = achievementRepository.save(achievement);
+                
+                // 添加到新解锁列表
+                newlyUnlocked.add(AchievementAssembler.toDTO(achievement));
+            }
+        }
+        
+        return newlyUnlocked;
     }
     
     /**

@@ -5,6 +5,8 @@ import com.crazydream.application.goal.assembler.GoalAssembler;
 import com.crazydream.application.goal.dto.CreateGoalCommand;
 import com.crazydream.application.goal.dto.GoalDTO;
 import com.crazydream.application.goal.dto.UpdateGoalCommand;
+import com.crazydream.domain.goal.event.GoalCompletedEvent;
+import com.crazydream.domain.goal.event.GoalProgressUpdatedEvent;
 import com.crazydream.domain.goal.model.aggregate.Goal;
 import com.crazydream.domain.goal.model.valueobject.GoalId;
 import com.crazydream.domain.goal.repository.GoalRepository;
@@ -13,6 +15,7 @@ import com.crazydream.domain.shared.model.UserId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +40,9 @@ public class GoalApplicationService {
     
     @Autowired
     private AchievementApplicationService achievementService;
+    
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
     
     /**
      * 创建目标
@@ -165,6 +171,7 @@ public class GoalApplicationService {
         }
         
         // 3. 更新进度（领域逻辑）
+        int oldProgress = goal.getProgress().getValue();
         boolean wasCompleted = goal.getStatus() == com.crazydream.domain.goal.model.valueobject.GoalStatus.COMPLETED;
         goal.updateProgress(progress);
         boolean isNowCompleted = goal.getStatus() == com.crazydream.domain.goal.model.valueobject.GoalStatus.COMPLETED;
@@ -172,14 +179,24 @@ public class GoalApplicationService {
         // 4. 持久化
         goal = goalRepository.save(goal);
         
-        // 5. 如果刚才完成了目标，触发成就检查
+        // 5. 发布进度更新事件
+        eventPublisher.publishEvent(new GoalProgressUpdatedEvent(
+            goal.getId().getValue(),
+            userId,
+            oldProgress,
+            progress
+        ));
+        
+        // 6. 如果刚才完成了目标，发布完成事件
         if (!wasCompleted && isNowCompleted) {
-            try {
-                achievementService.checkAndUnlock(userId);
-                logger.info("目标完成后触发成就检查（通过进度更新），用户ID: {}", userId);
-            } catch (Exception e) {
-                logger.error("触发成就检查失败，用户ID: {}", userId, e);
-            }
+            eventPublisher.publishEvent(new GoalCompletedEvent(
+                goal.getId().getValue(),
+                userId,
+                goal.getCategoryId() != null ? goal.getCategoryId().getValue() : null,
+                goal.getCreateTime(),
+                goal.getUpdateTime()
+            ));
+            logger.info("目标完成，发布GoalCompletedEvent，目标ID: {}", id);
         }
         
         return GoalAssembler.toDTO(goal);
@@ -201,14 +218,15 @@ public class GoalApplicationService {
         goal.complete();
         goal = goalRepository.save(goal);
         
-        // 2. 触发成就检查
-        try {
-            achievementService.checkAndUnlock(userId);
-            logger.info("目标完成后触发成就检查，用户ID: {}", userId);
-        } catch (Exception e) {
-            // 成就检查失败不影响目标完成
-            logger.error("触发成就检查失败，用户ID: {}", userId, e);
-        }
+        // 2. 发布目标完成事件
+        eventPublisher.publishEvent(new GoalCompletedEvent(
+            goal.getId().getValue(),
+            userId,
+            goal.getCategoryId() != null ? goal.getCategoryId().getValue() : null,
+            goal.getCreateTime(),
+            goal.getUpdateTime()
+        ));
+        logger.info("目标完成，发布GoalCompletedEvent，目标ID: {}", id);
         
         return GoalAssembler.toDTO(goal);
     }
