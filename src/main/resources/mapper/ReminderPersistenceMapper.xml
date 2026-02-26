@@ -6,8 +6,12 @@
     
     <insert id="insert" parameterType="com.crazydream.infrastructure.persistence.po.ReminderPO" 
             useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO reminder (user_id, goal_id, title, remind_time, is_read, create_time, update_time)
-        VALUES (#{userId}, #{goalId}, #{title}, #{remindTime}, #{isRead}, #{createTime}, #{updateTime})
+        INSERT INTO reminder (user_id, goal_id, title, remind_time, is_read, 
+                              related_entity_type, related_entity_id, reminder_type, 
+                              create_time, update_time)
+        VALUES (#{userId}, #{goalId}, #{title}, #{remindTime}, #{isRead}, 
+                #{relatedEntityType}, #{relatedEntityId}, #{reminderType}, 
+                #{createTime}, #{updateTime})
     </insert>
     
     <update id="update" parameterType="com.crazydream.infrastructure.persistence.po.ReminderPO">
@@ -18,27 +22,35 @@
     </update>
     
     <select id="selectById" resultType="com.crazydream.infrastructure.persistence.po.ReminderPO">
-        SELECT id, user_id, goal_id, title, remind_time, is_read, create_time, update_time
+        SELECT id, user_id, goal_id, title, remind_time, is_read, 
+               related_entity_type, related_entity_id, reminder_type, 
+               create_time, update_time
         FROM reminder
         WHERE id = #{id}
     </select>
     
     <select id="selectByUserId" resultType="com.crazydream.infrastructure.persistence.po.ReminderPO">
-        SELECT id, user_id, goal_id, title, remind_time, is_read, create_time, update_time
+        SELECT id, user_id, goal_id, title, remind_time, is_read, 
+               related_entity_type, related_entity_id, reminder_type, 
+               create_time, update_time
         FROM reminder
         WHERE user_id = #{userId}
         ORDER BY remind_time DESC
     </select>
     
     <select id="selectUnreadByUserId" resultType="com.crazydream.infrastructure.persistence.po.ReminderPO">
-        SELECT id, user_id, goal_id, title, remind_time, is_read, create_time, update_time
+        SELECT id, user_id, goal_id, title, remind_time, is_read, 
+               related_entity_type, related_entity_id, reminder_type, 
+               create_time, update_time
         FROM reminder
         WHERE user_id = #{userId} AND is_read = false
         ORDER BY remind_time ASC
     </select>
     
     <select id="selectByGoalId" resultType="com.crazydream.infrastructure.persistence.po.ReminderPO">
-        SELECT id, user_id, goal_id, title, remind_time, is_read, create_time, update_time
+        SELECT id, user_id, goal_id, title, remind_time, is_read, 
+               related_entity_type, related_entity_id, reminder_type, 
+               create_time, update_time
         FROM reminder
         WHERE goal_id = #{goalId}
         ORDER BY remind_time DESC
@@ -46,6 +58,20 @@
     
     <delete id="deleteById">
         DELETE FROM reminder WHERE id = #{id}
+    </delete>
+    
+    <select id="countByUserIdAndTypeAndRelatedId" resultType="int">
+        SELECT COUNT(*) FROM reminder 
+        WHERE user_id = #{userId} 
+          AND reminder_type = #{reminderType} 
+          AND related_entity_id = #{relatedEntityId}
+    </select>
+    
+    <delete id="deleteByUserIdAndTypeAndRelatedId">
+        DELETE FROM reminder 
+        WHERE user_id = #{userId} 
+          AND reminder_type = #{reminderType} 
+          AND related_entity_id = #{relatedEntityId}
     </delete>
     
 </mapper>

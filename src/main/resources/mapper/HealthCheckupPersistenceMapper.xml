@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.crazydream.infrastructure.persistence.mapper.HealthCheckupPersistenceMapper">
+
+    <resultMap id="BaseResultMap" type="com.crazydream.infrastructure.persistence.po.HealthCheckupPO">
+        <id property="id" column="id"/>
+        <result property="familyMemberId" column="family_member_id"/>
+        <result property="checkupDate" column="checkup_date"/>
+        <result property="nextCheckupDate" column="next_checkup_date"/>
+        <result property="hospital" column="hospital"/>
+        <result property="notes" column="notes"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.crazydream.infrastructure.persistence.po.HealthCheckupPO"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO health_checkup (
+            family_member_id, checkup_date, next_checkup_date, hospital, notes, create_time, update_time
+        ) VALUES (
+            #{familyMemberId}, #{checkupDate}, #{nextCheckupDate}, #{hospital}, #{notes}, #{createTime}, #{updateTime}
+        )
+    </insert>
+
+    <update id="updateById" parameterType="com.crazydream.infrastructure.persistence.po.HealthCheckupPO">
+        UPDATE health_checkup
+        SET checkup_date = #{checkupDate},
+            next_checkup_date = #{nextCheckupDate},
+            hospital = #{hospital},
+            notes = #{notes},
+            update_time = #{updateTime}
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT * FROM health_checkup WHERE id = #{id}
+    </select>
+
+    <select id="selectByFamilyMemberId" resultMap="BaseResultMap">
+        SELECT * FROM health_checkup 
+        WHERE family_member_id = #{familyMemberId}
+        ORDER BY checkup_date DESC
+    </select>
+
+    <delete id="deleteById">
+        DELETE FROM health_checkup WHERE id = #{id}
+    </delete>
+
+    <delete id="deleteByFamilyMemberId">
+        DELETE FROM health_checkup WHERE family_member_id = #{familyMemberId}
+    </delete>
+
+    <select id="selectAllWithNextCheckupDate" resultMap="BaseResultMap">
+        SELECT * FROM health_checkup 
+        WHERE next_checkup_date IS NOT NULL
+        ORDER BY next_checkup_date
+    </select>
+
+</mapper>

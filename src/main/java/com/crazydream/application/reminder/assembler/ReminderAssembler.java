@@ -11,9 +11,15 @@ import java.util.stream.Collectors;
 public class ReminderAssembler {
     
     public static Reminder toDomain(CreateReminderCommand command, UserId userId) {
+        // 处理goalId可为空的情况，提醒不一定要关联目标
+        GoalId goalId = null;
+        if (command.getGoalId() != null && command.getGoalId() > 0) {
+            goalId = GoalId.of(command.getGoalId());
+        }
+        
         return Reminder.create(
             userId,
-            GoalId.of(command.getGoalId()),
+            goalId,
             command.getTitle(),
             command.getRemindTime()
         );
@@ -27,7 +33,12 @@ public class ReminderAssembler {
             dto.setId(reminder.getId().getValue());
         }
         dto.setUserId(reminder.getUserId().getValue());
-        dto.setGoalId(reminder.getGoalId().getValue());
+        
+        // 处理goalId可为空的情况
+        if (reminder.getGoalId() != null) {
+            dto.setGoalId(reminder.getGoalId().getValue());
+        }
+        
         dto.setTitle(reminder.getTitle());
         dto.setRemindTime(reminder.getRemindTime());
         dto.setRead(reminder.isRead());

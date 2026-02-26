@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.crazydream.infrastructure.persistence.mapper.DocumentPersistenceMapper">
+    
+    <insert id="insert" parameterType="com.crazydream.infrastructure.persistence.po.DocumentPO" 
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO document (
+            user_id, category_id, file_name, original_name, file_type, 
+            file_extension, file_size, file_path, file_url, mime_type,
+            description, tags, download_count, view_count, status, 
+            create_time, update_time
+        )
+        VALUES (
+            #{userId}, #{categoryId}, #{fileName}, #{originalName}, #{fileType},
+            #{fileExtension}, #{fileSize}, #{filePath}, #{fileUrl}, #{mimeType},
+            #{description}, #{tags}, #{downloadCount}, #{viewCount}, #{status},
+            #{createTime}, #{updateTime}
+        )
+    </insert>
+    
+    <update id="update" parameterType="com.crazydream.infrastructure.persistence.po.DocumentPO">
+        UPDATE document
+        SET category_id = #{categoryId},
+            file_name = #{fileName},
+            description = #{description},
+            tags = #{tags},
+            status = #{status},
+            update_time = #{updateTime}
+        WHERE id = #{id}
+    </update>
+    
+    <select id="selectById" resultType="com.crazydream.infrastructure.persistence.po.DocumentPO">
+        SELECT id, user_id, category_id, file_name, original_name, file_type, 
+               file_extension, file_size, file_path, file_url, mime_type,
+               description, tags, download_count, view_count, status, 
+               create_time, update_time
+        FROM document
+        WHERE id = #{id}
+    </select>
+    
+    <select id="selectByUserIdAndCategoryId" resultType="com.crazydream.infrastructure.persistence.po.DocumentPO">
+        SELECT id, user_id, category_id, file_name, original_name, file_type, 
+               file_extension, file_size, file_path, file_url, mime_type,
+               description, tags, download_count, view_count, status, 
+               create_time, update_time
+        FROM document
+        WHERE user_id = #{userId}
+          AND category_id = #{categoryId}
+          AND status = 1
+        ORDER BY create_time DESC
+    </select>
+    
+    <select id="selectByUserId" resultType="com.crazydream.infrastructure.persistence.po.DocumentPO">
+        SELECT id, user_id, category_id, file_name, original_name, file_type, 
+               file_extension, file_size, file_path, file_url, mime_type,
+               description, tags, download_count, view_count, status, 
+               create_time, update_time
+        FROM document
+        WHERE user_id = #{userId}
+          AND status = 1
+        ORDER BY create_time DESC
+    </select>
+    
+    <select id="searchByFileName" resultType="com.crazydream.infrastructure.persistence.po.DocumentPO">
+        SELECT id, user_id, category_id, file_name, original_name, file_type, 
+               file_extension, file_size, file_path, file_url, mime_type,
+               description, tags, download_count, view_count, status, 
+               create_time, update_time
+        FROM document
+        WHERE user_id = #{userId}
+          AND status = 1
+          AND (file_name LIKE CONCAT('%', #{keyword}, '%') 
+               OR original_name LIKE CONCAT('%', #{keyword}, '%'))
+        ORDER BY create_time DESC
+    </select>
+    
+    <delete id="deleteById">
+        UPDATE document
+        SET status = 0,
+            update_time = NOW()
+        WHERE id = #{id}
+    </delete>
+    
+    <update id="incrementDownloadCount">
+        UPDATE document
+        SET download_count = download_count + 1,
+            update_time = NOW()
+        WHERE id = #{id}
+    </update>
+    
+    <update id="incrementViewCount">
+        UPDATE document
+        SET view_count = view_count + 1,
+            update_time = NOW()
+        WHERE id = #{id}
+    </update>
+    
+</mapper>

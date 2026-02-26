@@ -9,6 +9,7 @@ import com.crazydream.domain.achievement.repository.AchievementRepository;
 import com.crazydream.domain.shared.model.UserId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -49,7 +50,11 @@ public class AchievementApplicationService {
         return AchievementAssembler.toDTOList(achievements);
     }
     
-    @Transactional
+    /**
+     * 检查并解锁成就
+     * 注意：使用 REQUIRES_NEW 传播级别，避免影响外部事务
+     */
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void checkAndUnlock(Long userId) {
         List<Achievement> achievements = achievementRepository.findByUserId(UserId.of(userId));
         AchievementStatistics statistics = statisticsService.collectStatistics(userId);
@@ -69,7 +74,11 @@ public class AchievementApplicationService {
      * @param userId 用户ID
      * @return 新解锁的成就列表
      */
-    @Transactional
+    /**
+     * 检查并解锁成就，返回新解锁的成就列表
+     * 注意：使用 REQUIRES_NEW 传播级别，避免影响外部事务
+     */
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public List<AchievementDTO> checkAndUnlockWithResult(Long userId) {
         List<Achievement> achievements = achievementRepository.findByUserId(UserId.of(userId));
         AchievementStatistics statistics = statisticsService.collectStatistics(userId);

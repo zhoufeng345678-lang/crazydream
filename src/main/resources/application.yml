@@ -13,7 +13,7 @@ spring:
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/crazydream?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai}
     username: ${SPRING_DATASOURCE_USERNAME:root}
-    password: ${SPRING_DATASOURCE_PASSWORD:Zf860610_1}
+    password: ${SPRING_DATASOURCE_PASSWORD:your_password_here}
     driver-class-name: com.mysql.cj.jdbc.Driver
   
   # 文件上传配置
@@ -49,14 +49,14 @@ logging:
 aliyun:
   oss:
     endpoint: ${ALIYUN_OSS_ENDPOINT:oss-cn-beijing.aliyuncs.com}
-    access-key-id: ${ALIYUN_OSS_ACCESS_KEY_ID:your-access-key-id}
-    access-key-secret: ${ALIYUN_OSS_ACCESS_KEY_SECRET:your-access-key-secret}
-    bucket-name: ${ALIYUN_OSS_BUCKET_NAME:crazydream01}
-    domain: ${ALIYUN_OSS_DOMAIN:crazydream01.oss-cn-beijing.aliyuncs.com}
+    access-key-id: ${ALIYUN_OSS_ACCESS_KEY_ID:your_access_key_id}
+    access-key-secret: ${ALIYUN_OSS_ACCESS_KEY_SECRET:your_access_key_secret}
+    bucket-name: ${ALIYUN_OSS_BUCKET_NAME:your_bucket_name}
+    domain: ${ALIYUN_OSS_DOMAIN:your_bucket.oss-cn-beijing.aliyuncs.com}
 # JWT 配置
 # 生产环境建议通过环境变量覆盖 JWT_SECRET
 jwt:
-  secret: ${JWT_SECRET:71b802d1507b4a9492f39d3365d0d6a00430212b05276a64c2b1f6e0b2d0a9e8}
+  secret: ${JWT_SECRET:please_change_this_to_secure_random_key_in_production}
   expiration: ${JWT_EXPIRATION:86400}
   header: Authorization
   prefix: "Bearer "

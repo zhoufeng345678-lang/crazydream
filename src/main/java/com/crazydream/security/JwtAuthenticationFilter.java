@@ -90,6 +90,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     // 设置认证信息到Spring Security上下文
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                     logger.info("用户认证成功，设置认证信息到上下文");
+                    
+                    // 将userId设置为request attribute，供Controller使用
+                    request.setAttribute("userId", userId);
                 } catch (Exception e) {
                     logger.error("JWT令牌处理失败: {}", e.getMessage(), e);
                     // 认证失败，清除上下文
@@ -117,6 +120,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     // 设置认证信息到Spring Security上下文
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                     logger.info("测试模式：默认用户认证成功");
+                    
+                    // 将userId设置为request attribute，供Controller使用
+                    request.setAttribute("userId", defaultTestUserId);
                 } catch (Exception e) {
                     logger.error("测试模式：设置默认用户失败: {}", e.getMessage(), e);
                 }

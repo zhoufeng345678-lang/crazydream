@@ -59,15 +59,20 @@ CREATE TABLE IF NOT EXISTS `goal` (
 CREATE TABLE IF NOT EXISTS `reminder` (
   `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
   `user_id` BIGINT NOT NULL COMMENT '用户ID',
-  `goal_id` BIGINT NOT NULL COMMENT '目标ID',
+  `goal_id` BIGINT DEFAULT NULL COMMENT '目标ID（可选）',
+  `related_entity_type` VARCHAR(50) DEFAULT 'GOAL' COMMENT '关联实体类型(GOAL/FAMILY_MEMBER/HEALTH_CHECKUP)',
+  `related_entity_id` BIGINT DEFAULT NULL COMMENT '关联实体ID',
   `title` VARCHAR(100) NOT NULL COMMENT '提醒标题',
   `content` VARCHAR(200) DEFAULT NULL COMMENT '提醒内容',
   `remind_time` DATETIME NOT NULL COMMENT '提醒时间',
+  `reminder_type` VARCHAR(50) DEFAULT 'GOAL_DEADLINE' COMMENT '提醒类型(GOAL_DEADLINE/BIRTHDAY/HEALTH_CHECKUP)',
   `is_read` TINYINT DEFAULT 0 COMMENT '是否已读（0:未读, 1:已读）',
   `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE CASCADE,
-  FOREIGN KEY (`goal_id`) REFERENCES `goal`(`id`) ON DELETE CASCADE
+  FOREIGN KEY (`goal_id`) REFERENCES `goal`(`id`) ON DELETE CASCADE,
+  INDEX idx_user_remind_time (`user_id`, `remind_time`),
+  INDEX idx_related_entity (`related_entity_type`, `related_entity_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='提醒表';
 
 -- 创建子目标表
@@ -158,6 +163,37 @@ CREATE TABLE IF NOT EXISTS `todo` (
   INDEX idx_priority (`priority`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='待办事项表';
 
+-- 创建家庭成员表
+CREATE TABLE IF NOT EXISTS `family_member` (
+  `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
+  `user_id` BIGINT NOT NULL COMMENT '用户ID',
+  `name` VARCHAR(50) NOT NULL COMMENT '成员姓名',
+  `relation_type` VARCHAR(20) NOT NULL COMMENT '关系类型(FATHER/MOTHER/SPOUSE/SON/DAUGHTER/BROTHER/SISTER/GRANDFATHER/GRANDMOTHER/OTHER)',
+  `birthday` DATE DEFAULT NULL COMMENT '生日',
+  `phone` VARCHAR(20) DEFAULT NULL COMMENT '手机号',
+  `avatar` VARCHAR(255) DEFAULT NULL COMMENT '头像URL',
+  `notes` TEXT DEFAULT NULL COMMENT '备注',
+  `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE CASCADE,
+  INDEX idx_user_id (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='家庭成员表';
+
+-- 创建健康体检表
+CREATE TABLE IF NOT EXISTS `health_checkup` (
+  `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
+  `family_member_id` BIGINT NOT NULL COMMENT '家庭成员ID',
+  `checkup_date` DATE NOT NULL COMMENT '体检日期',
+  `next_checkup_date` DATE DEFAULT NULL COMMENT '下次体检日期',
+  `hospital` VARCHAR(100) DEFAULT NULL COMMENT '体检医院',
+  `notes` TEXT DEFAULT NULL COMMENT '备注',
+  `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  FOREIGN KEY (`family_member_id`) REFERENCES `family_member`(`id`) ON DELETE CASCADE,
+  INDEX idx_member_id (`family_member_id`),
+  INDEX idx_checkup_date (`checkup_date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='健康体检表';
+
 -- 插入默认分类数据
 INSERT INTO `category` (`name`, `icon`, `color`, `sort`, `status`) VALUES
 ('职业发展', '💼', '#3498db', 1, 1),
@@ -166,3 +202,50 @@ INSERT INTO `category` (`name`, `icon`, `color`, `sort`, `status`) VALUES
 ('兴趣爱好', '🎨', '#f39c12', 4, 1),
 ('家庭关系', '👨‍👩‍👧‍👦', '#9b59b6', 5, 1),
 ('财务管理', '💰', '#1abc9c', 6, 1);
+
+-- 创建资料分类表
+CREATE TABLE IF NOT EXISTS `document_category` (
+  `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
+  `name` VARCHAR(50) NOT NULL COMMENT '分类名称',
+  `description` VARCHAR(200) DEFAULT NULL COMMENT '分类描述',
+  `icon` VARCHAR(20) DEFAULT NULL COMMENT '分类图标(emoji)',
+  `color` VARCHAR(20) DEFAULT NULL COMMENT '分类颜色',
+  `sort_order` INT DEFAULT 0 COMMENT '排序',
+  `status` TINYINT DEFAULT 1 COMMENT '状态（1:正常, 0:禁用）',
+  `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='资料分类表';
+
+-- 插入默认资料分类
+INSERT INTO `document_category` (`name`, `description`, `icon`, `color`, `sort_order`) VALUES
+('工作资料', '工作相关的文档和资料', '💼', '#667eea', 1),
+('学习资料', '学习相关的文档和资料', '📚', '#10b981', 2),
+('生活资料', '生活相关的文档和资料', '🏠', '#f59e0b', 3);
+
+-- 创建资料文档表
+CREATE TABLE IF NOT EXISTS `document` (
+  `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
+  `user_id` BIGINT NOT NULL COMMENT '用户ID',
+  `category_id` BIGINT NOT NULL COMMENT '分类ID',
+  `file_name` VARCHAR(255) NOT NULL COMMENT '文件名',
+  `original_name` VARCHAR(255) NOT NULL COMMENT '原始文件名',
+  `file_type` VARCHAR(50) NOT NULL COMMENT '文件类型(PDF/DOC/DOCX/XLS/XLSX/PPT/PPTX/TXT/IMAGE)',
+  `file_extension` VARCHAR(20) NOT NULL COMMENT '文件扩展名',
+  `file_size` BIGINT NOT NULL COMMENT '文件大小(字节)',
+  `file_path` VARCHAR(500) NOT NULL COMMENT '文件存储路径',
+  `file_url` VARCHAR(500) NOT NULL COMMENT '文件访问URL',
+  `mime_type` VARCHAR(100) DEFAULT NULL COMMENT 'MIME类型',
+  `description` TEXT DEFAULT NULL COMMENT '文件描述',
+  `tags` VARCHAR(500) DEFAULT NULL COMMENT '标签(JSON数组)',
+  `download_count` INT DEFAULT 0 COMMENT '下载次数',
+  `view_count` INT DEFAULT 0 COMMENT '查看次数',
+  `status` TINYINT DEFAULT 1 COMMENT '状态（1:正常, 0:已删除）',
+  `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE CASCADE,
+  FOREIGN KEY (`category_id`) REFERENCES `document_category`(`id`) ON DELETE CASCADE,
+  INDEX idx_user_category (`user_id`, `category_id`),
+  INDEX idx_file_type (`file_type`),
+  INDEX idx_create_time (`create_time`),
+  FULLTEXT INDEX ft_file_name (`file_name`, `original_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='资料文档表';

@@ -79,14 +79,17 @@ public class GoalController {
             Long userId = getCurrentUserId();
             command.setUserId(userId);
             
+            logger.info("创建目标请求: userId={}, title={}, categoryId={}, priority={}, deadline={}", 
+                userId, command.getTitle(), command.getCategoryId(), command.getPriority(), command.getDeadline());
+            
             GoalDTO goal = goalApplicationService.createGoal(command);
             return ResponseResult.success(goal);
         } catch (IllegalArgumentException e) {
-            logger.error("创建目标失败: {}", e.getMessage());
+            logger.error("创建目标失败(参数错误): {}", e.getMessage(), e);
             return ResponseResult.error(400, e.getMessage());
         } catch (Exception e) {
-            logger.error("创建目标失败: {}", e.getMessage(), e);
-            return ResponseResult.error(500, "系统内部错误");
+            logger.error("创建目标失败(系统错误): ", e);
+            return ResponseResult.error(500, "系统内部错误: " + e.getMessage());
         }
     }
     
