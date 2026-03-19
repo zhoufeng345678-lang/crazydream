@@ -54,9 +54,10 @@ aliyun:
     bucket-name: ${ALIYUN_OSS_BUCKET_NAME:your_bucket_name}
     domain: ${ALIYUN_OSS_DOMAIN:your_bucket.oss-cn-beijing.aliyuncs.com}
 # JWT 配置
-# 生产环境建议通过环境变量覆盖 JWT_SECRET
+# 生产环境必须通过环境变量 JWT_SECRET 提供至少64字符的随机密钥
+# 示例：JWT_SECRET=$(openssl rand -hex 32)
 jwt:
-  secret: ${JWT_SECRET:please_change_this_to_secure_random_key_in_production}
+  secret: ${JWT_SECRET:crazydream-dev-only-secret-do-NOT-use-in-production-change-before-deploy}
   expiration: ${JWT_EXPIRATION:86400}
   header: Authorization
   prefix: "Bearer "
@@ -72,9 +73,10 @@ wechat:
 
 # 安全认证配置
 security:
-  # 设置为true时禁用所有接口的安全认证（仅用于测试环境）
+  # 是否禁用认证（仅测试环境使用，生产环境必须为 false）
+  # 可通过环境变量 SECURITY_AUTH_DISABLED=true 临时开启，方便本地调试
   auth:
-    disabled: true
+    disabled: ${SECURITY_AUTH_DISABLED:false}
 
   # 测试环境默认用户ID（仅在security.auth.disabled=true时生效）
   # 当请求不带token时，使用此用户ID
